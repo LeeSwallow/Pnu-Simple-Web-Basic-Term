@@ -1,0 +1,48 @@
+@import 'tailwindcss';
+@plugin 'daisyui';
+
+
+.main-section {
+    @apply card bg-base-100;
+    box-shadow:0 0 .25em rgba(0,0,0,.25);
+    box-sizing:border-box;
+
+    position:absolute;
+    top: 5rem;
+    left:50%;
+    min-height: 50vh;
+    min-width: 400px;
+    width: 50vw;
+    padding: 1rem;
+    transform:translate(-50%, 0%);
+}
+
+.bg {
+    animation:slide 6s ease-in-out infinite alternate;
+    background-image: linear-gradient(-60deg, var(--color-warning) 50%, var(--color-error) 50%);
+    bottom:0;
+    left:-50%;
+    opacity:.5;
+    position:fixed;
+    right:-50%;
+    top:0;
+    z-index:-1;
+}
+
+.bg2 {
+    animation-direction:alternate-reverse;
+    animation-duration:8s;
+}
+
+.bg3 {
+    animation-duration:10s;
+}
+
+@keyframes slide {
+    0% {
+        transform:translateX(-25%);
+    }
+    100% {
+        transform:translateX(25%);
+    }
+}
