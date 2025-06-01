@@ -15,12 +15,22 @@ export const todo = sqliteTable('todo', {
 });
 
 /*
-포모도로 기록을 저장하는 테이블
+ 뽀모도로 타이머를 저장하는 테이블
 */
-export const pomodoro = sqliteTable('pomodoro', {
+export const pomodoro = sqliteTable('pomdoro_timer', {
 	id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
 	todo_id: integer('todo_id', { mode: 'number' }).references(() => todo.id),
 	study_time: integer('study_time', { mode: 'number' }),
 	break_time: integer('break_time', { mode: 'number' }),
 });
 
+/*
+ 학습 통계를 저장하는 테이블
+*/
+export const study_stats = sqliteTable('study_stats', {
+	id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
+	date: integer('date', { mode: 'number' }).notNull(),
+	total_study_time: integer('total_study_time', { mode: 'number' }).notNull().default(0),
+	total_break_time: integer('total_break_time', { mode: 'number' }).notNull().default(0),
+	total_pomodoro: integer('total_pomodoro', { mode: 'number' }).notNull().default(0),
+});

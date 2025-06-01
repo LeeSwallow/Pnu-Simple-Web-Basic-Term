@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { goto } from '$app/navigation';
+    import type { PageProps } from './$types';
 
     interface Todo {
         id: number;
@@ -103,9 +104,12 @@
     }
 </script>
 
-<div class="main-section">
-    <h1 class="card-title mb-8">포모도로 Todo</h1>
-    
+<div class="todo-container">
+    <div class="todo-header">
+        <h1 class="card-title">할일 관리</h1>
+        <button class="btn btn-primary btn-sm" on:click={() => showCreateForm = true}>새로 만들기</button>
+    </div>
+
     <!-- 활성화된 Todo -->
     <div class="active-todo-container">
         <div class="card-body">
@@ -157,7 +161,6 @@
             <div class="flex justify-between items-center mb-4">
                 <div class="btn-group">
                     <h2 class="card-title">Todo 리스트</h2>
-                    <button class="btn btn-accent btn-sm" on:click={() => showCreateForm = true}>새로 만들기</button>
                 </div>
                 <label class="label cursor-pointer">
                     <span class="label-text mr-2">완료된 항목 표시</span>
@@ -168,19 +171,19 @@
             {#if showCreateForm}
             <form class="todo-form" on:submit|preventDefault={handleCreateTodo}>
                 <div class="form-control mb-2">
-                    <label class="label">
+                    <label class="label" for="todoTitle">
                         <span class="label-text">제목</span>
                     </label>
                     <input class="input input-bordered w-full" type="text" bind:value={newTodo.content} required placeholder="할 일 제목을 입력하세요" />
                 </div>
                 <div class="form-control mb-2">
-                    <label class="label">
+                    <label class="label" for="todoDescription">
                         <span class="label-text">설명</span>
                     </label>
                     <textarea class="textarea textarea-bordered w-full" rows="3" bind:value={newTodo.description} required placeholder="할 일 설명을 입력하세요"></textarea>
                 </div>
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="todoMinPomodoro">
                         <span class="label-text">최소 포모도로 횟수</span>
                     </label>
                     <input class="input input-bordered w-full" type="number" min="1" bind:value={newTodo.min_pomodoro} required placeholder="예: 4" />
@@ -235,8 +238,13 @@
     @reference "tailwindcss";
     @plugin "daisyui";
 
-    .main-section {
+    .todo-container {
         @apply container mx-auto p-4;
+        width: 80vw;
+    }
+
+    .todo-header {
+        @apply mb-8 flex flex-row justify-between;
     }
 
     .active-todo-container {
