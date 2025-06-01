@@ -2,6 +2,14 @@
 import { createAnimatable } from 'animejs';
 import { onMount } from 'svelte';
 
+export let activeTodo: {
+  content: string;
+  description: string;
+} = {
+  content: "선택된 TODO 없음",
+  description: "좌측에서 할 일을 선택해 주세요."
+};
+
 let clockElement: HTMLElement;
 let clock: any;
 let isRunning = false;
@@ -54,90 +62,42 @@ onMount(() => {
 </script>
 
 <div class="main-section">
-  <div class="timer-container">
-    <div class="clock" bind:this={clockElement}></div>
-    <div class="timer-display">
-      {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+  <div class="w-96 bg-base-100 rounded-2xl p-6 mx-auto shadow-lg relative">
+    <div class="flex justify-between items-center mb-2">
+      <span class="text-primary font-bold text-lg">포모도로 타이머</span>
+      <button class="text-accent hover:text-accent-focus">
+        <svg width="20" height="20" fill="currentColor"><!-- 아이콘 --></svg>
+      </button>
     </div>
-    <div class="controls">
-      {#if !isRunning}
-        <button on:click={startTimer}>시작</button>
-      {:else}
-        <button on:click={stopTimer}>일시정지</button>
-      {/if}
-      <button on:click={resetTimer}>리셋</button>
+    <div class="mb-2">
+      <div class="text-base font-semibold text-base-content">{activeTodo.content}</div>
+      <div class="text-sm text-base-content/70">{activeTodo.description}</div>
     </div>
+    <div class="text-accent text-sm mb-1 ml-1">current time</div>
+    <div class="bg-base-200 rounded-md text-center py-3 mb-4">
+      <span class="font-digital text-5xl text-primary tracking-widest select-none">
+        {String(timeLeft).padStart(4, '0')}
+      </span>
+    </div>
+    <button
+      class="w-full border-2 border-primary rounded-lg py-2 text-primary font-bold hover:bg-primary hover:text-base-100 transition"
+      on:click={startTimer}
+    >
+      PLAY
+    </button>
   </div>
 </div>
 
-<style>
-.main-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f5f5f5;
-}
+<style lang="postcss">
+    @reference "tailwindcss";
+    @plugin "daisyui";
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 
-.timer-container {
-  text-align: center;
-}
-
-.clock {
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  background: #ffffff;
-  position: relative;
-  margin: 0 auto;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-}
-
-.clock::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 4px;
-  height: 140px;
-  background: #ff6b6b;
-  transform-origin: 50% 0;
-  transform: translateX(-50%);
-}
-
-.timer-display {
-  font-size: 3rem;
-  font-weight: bold;
-  margin: 20px 0;
-  color: #333;
-}
-
-.controls {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 5px;
-  background-color: #4CAF50;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #45a049;
-}
-
-button:last-child {
-  background-color: #f44336;
-}
-
-button:last-child:hover {
-  background-color: #da190b;
-}
+    .font-digital {
+        font-family: 'Orbitron', monospace;
+        letter-spacing: 0.1em;
+    }
+    .main-section {
+        @apply flex justify-center items-center min-h-screen bg-base-200;
+    }
 </style>

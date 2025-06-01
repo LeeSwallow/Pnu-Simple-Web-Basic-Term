@@ -3,19 +3,26 @@
 
 
 .main-section {
-    @apply card bg-base-100;
-    box-shadow:0 0 .25em rgba(0,0,0,.25);
-    box-sizing:border-box;
+    @apply card bg-base-100 shadow-lg;
 
     position:absolute;
-    top: 5rem;
+    top: 8rem;
     left:50%;
     min-height: 50vh;
     min-width: 400px;
-    width: 50vw;
     padding: 1rem;
     transform:translate(-50%, 0%);
 }
+
+.main-header {
+    @apply card bg-base-100 shadow-lg;
+    position:fixed;
+    top: 1rem;
+    left:50%;
+    padding: 0.5rem;
+    transform:translate(-50%, 0%);
+}
+
 
 .bg {
     animation:slide 6s ease-in-out infinite alternate;
