@@ -1,92 +1,47 @@
 <script lang="ts">
-import { createAnimatable } from 'animejs';
 import { onMount } from 'svelte';
+import { PomodoroTimer } from '$lib/client/pomodoro';
 
-export let activeTodo: {
-  content: string;
-  description: string;
-} = {
-  content: "선택된 TODO 없음",
-  description: "좌측에서 할 일을 선택해 주세요."
-};
+const { data } = $props();
+const { todo } = data;
+const timer = new PomodoroTimer(todo.timer?.study_time ?? 25, todo.timer?.break_time ?? 5);
 
-let clockElement: HTMLElement;
-let clock: any;
-let isRunning = false;
-let timeLeft = 25 * 60; // 25분
-let timerInterval: number;
+let clock_str = $state("00:00");
+function formatTime(timeLeft: number) {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
 
-const startTimer = () => {
-  if (isRunning) return;
-  isRunning = true;
-  
-  timerInterval = window.setInterval(() => {
-    timeLeft--;
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      isRunning = false;
-      timeLeft = 25 * 60;
-      // 알림음 재생
-      new Audio('/notification.mp3').play().catch(() => {});
-    }
-    updateClock();
-  }, 1000);
-};
-
-const stopTimer = () => {
-  clearInterval(timerInterval);
-  isRunning = false;
-};
-
-const resetTimer = () => {
-  stopTimer();
-  timeLeft = 25 * 60;
-  updateClock();
-};
-
-const updateClock = () => {
-  if (!clock) return;
-  const progress = 1 - (timeLeft / (25 * 60));
-  const angle = progress * Math.PI * 2;
-  clock.rotate(angle);
-};
-
-onMount(() => {
-  if (clockElement) {
-    clock = createAnimatable(clockElement, {
-      rotate: { unit: 'rad' },
-      duration: 400,
-    });
-  }
+timer.onTick = ((timeLeft) => {
+    console.log(timeLeft);
+    clock_str = formatTime(timeLeft);
 });
+
+timer.onComplete = ((phase) => {
+    console.log(phase);
+});
+
 </script>
 
-<div class="main-section">
   <div class="w-96 bg-base-100 rounded-2xl p-6 mx-auto shadow-lg relative">
     <div class="flex justify-between items-center mb-2">
-      <span class="text-primary font-bold text-lg">포모도로 타이머</span>
-      <button class="text-accent hover:text-accent-focus">
-        <svg width="20" height="20" fill="currentColor"><!-- 아이콘 --></svg>
-      </button>
+        <span class="text-primary font-bold text-lg">포모도로 타이머</span>
     </div>
     <div class="mb-2">
-      <div class="text-base font-semibold text-base-content">{activeTodo.content}</div>
-      <div class="text-sm text-base-content/70">{activeTodo.description}</div>
+        <div class="text-base font-semibold text-base-content">{todo.content}</div>
+        <div class="text-sm text-base-content/70">{todo.description}</div>
     </div>
     <div class="text-accent text-sm mb-1 ml-1">current time</div>
     <div class="bg-base-200 rounded-md text-center py-3 mb-4">
-      <span class="font-digital text-5xl text-primary tracking-widest select-none">
-        {String(timeLeft).padStart(4, '0')}
-      </span>
+        <span class="font-digital text-5xl text-primary tracking-widest select-none">
+            {clock_str}
+        </span>
     </div>
-    <button
-      class="w-full border-2 border-primary rounded-lg py-2 text-primary font-bold hover:bg-primary hover:text-base-100 transition"
-      on:click={startTimer}
-    >
-      PLAY
+    <button onclick={() => timer.start()} class="w-full border-2 border-primary rounded-lg py-2 text-primary font-bold hover:bg-primary hover:text-base-100 transition">
+        PLAY
     </button>
   </div>
-</div>
 
 <style lang="postcss">
     @reference "tailwindcss";
