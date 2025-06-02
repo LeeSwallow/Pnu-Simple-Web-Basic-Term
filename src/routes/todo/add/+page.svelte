@@ -3,22 +3,16 @@
     import { onMount } from 'svelte';
     import { createTodo, validateCreateRequest } from '$lib/client/todos';
     import type { createResTodoDto, createReqTodoDto } from '$lib/server/dto';
-    import type { Todo } from '$lib/server/db/schema';
+    import type { Todo, Pomodoro } from '$lib/server/db/schema';
 
     const {data} = $props();
-    let timers: {id: number, name: string, study_time: number, break_time: number}[] = $state([]);
+    let timers: Pomodoro[] = $state(data.timers as Pomodoro[]);
+    
     let title = '';
     let description = '';
     let minPomodoro = 1;
     let selectedTimer = 0;
 
-    onMount(async () => {
-        const serverTimers = data.timers;
-        for (const timer of serverTimers) {
-            timer["name"] = `${timer.study_time}분 작업 + ${timer.break_time}분 휴식`;
-            timers.push(timer);
-        }
-    });
 
     async function handleSubmit() {
         // TODO: 실제 데이터 저장 로직 구현

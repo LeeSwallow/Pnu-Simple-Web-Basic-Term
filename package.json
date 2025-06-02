@@ -45,6 +45,7 @@
 		"better-sqlite3": "^11.8.0",
 		"chart.js": "^4.4.9",
 		"daisyui": "^5.0.43",
-		"drizzle-orm": "^0.40.0"
+		"drizzle-orm": "^0.40.0",
+		"pnu-webbasic-term": "file:"
 	}
 }

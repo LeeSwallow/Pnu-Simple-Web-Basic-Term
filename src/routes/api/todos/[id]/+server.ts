@@ -19,16 +19,22 @@ export const GET = async ({ params }: { params: { id: string } }): Promise<Respo
 
 export const PUT = async ({ params, request }: { params: { id: string }, request: Request }): Promise<Response> => {
     const { id } = params;
+
+    const target = await db.query.todo.findFirst({where: eq(todo.id, parseInt(id))});
+    if (!target) return json({todo: null});
+
     const body = await request.json();
-    const { content, description, min_pomodoro, timer_id } = body;
-
-    const result = await db.update(todo).set({ content, description, min_pomodoro, timer_id }).where(eq(todo.id, parseInt(id)));
-
-    const updatedId = result.lastInsertRowid as number;
+    if (body.content) target.content = body.content;
+    if (body.description) target.description = body.description;
+    if (body.pomodoro) target.pomodoro = body.pomodoro;
+    if (body.min_pomodoro) target.min_pomodoro = body.min_pomodoro;
+    target.updatedAt = Date.now();
+    const result = await db.update(todo).set(target).where(eq(todo.id, parseInt(id)));
     
-    const updatedTodo = await db.select().from(todo).where(eq(todo.id, updatedId));
+    if (result.changes === 0) return json({todo: null});
+    const updatedTodo = await db.query.todo.findFirst({where: eq(todo.id, parseInt(id))});
     return json({
-        todo: updatedTodo[0]
+        todo: updatedTodo
     });
 }
 

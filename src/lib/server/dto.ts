@@ -20,6 +20,13 @@ export interface TodoDto {
     } | null;
 }
 
+export interface postStatsDto {
+    date: number;
+    study_time: number;
+    break_time: number;
+    pomodoro: number;
+}
+
 export interface getResTodoByIdDto {
     todo: TodoDto | null;
 }

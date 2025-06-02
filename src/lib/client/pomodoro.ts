@@ -24,6 +24,7 @@ export class PomodoroTimer {
     public onTick: (timeLeft: number) => void = () => {};
     public onComplete: (phase: PomodoroTimerPhase) => void = () => {};
     public onError: (error: string) => void = () => {};
+    public onStateChanged: (state: PomodoroTimerState) => void = () => {};
 
     constructor(workTime: number, breakTime: number) {
         this.workTime = workTime * 60;
@@ -33,8 +34,10 @@ export class PomodoroTimer {
 
     private finish() {
         this.onComplete(this.phase);
-
         this.state = PomodoroTimerState.STOPPED;
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+        }
         this.timerInterval = null;
         if (this.phase === PomodoroTimerPhase.WORKING) {
             this.timeLeft = this.workTime;
@@ -43,6 +46,8 @@ export class PomodoroTimer {
             this.timeLeft = this.breakTime;
             this.phase = PomodoroTimerPhase.BREAKING;
         }
+        
+        this.onStateChanged(this.state);
     }
 
     public start() {
@@ -50,7 +55,6 @@ export class PomodoroTimer {
             this.onError("Timer is already running");
             return;
         }
-
         this.state = PomodoroTimerState.RUNNING;
         this.timerInterval = setInterval(() => {
             this.timeLeft--;
@@ -59,6 +63,8 @@ export class PomodoroTimer {
                 this.finish();
             }
         }, 1000);
+
+        this.onStateChanged(this.state);
     }
 
     public reset() {
@@ -75,6 +81,8 @@ export class PomodoroTimer {
         } else {
             this.timeLeft = this.breakTime;
         }
+
+        this.onStateChanged(this.state);
     }
 
     public skip() {
@@ -82,7 +90,18 @@ export class PomodoroTimer {
             this.onError("Timer is not running or paused");
             return;
         }
-        this.finish();
+        this.state = PomodoroTimerState.STOPPED;
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+        }
+        this.timerInterval = null;
+        if (this.phase === PomodoroTimerPhase.WORKING) {
+            this.timeLeft = this.workTime;
+        } else {
+            this.timeLeft = this.breakTime;
+        }
+
+        this.onStateChanged(this.state);
     }
 
     public pause() {
@@ -90,11 +109,12 @@ export class PomodoroTimer {
             this.onError("Timer is not running");
             return;
         }
-
         this.state = PomodoroTimerState.PAUSED;
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
         }
+
+        this.onStateChanged(this.state);
     }
     public resume() {
         if (this.state !== PomodoroTimerState.PAUSED) {
@@ -109,6 +129,8 @@ export class PomodoroTimer {
                 this.finish();
             }
         }, 1000);
+
+        this.onStateChanged(this.state);
     }
 
     public getTimeLeft() {
@@ -121,5 +143,13 @@ export class PomodoroTimer {
 
     public getState() {
         return this.state;
+    }
+
+    public getWorkTime() {
+        return this.workTime;
+    }
+
+    public getBreakTime() {
+        return this.breakTime;
     }
 }

@@ -17,7 +17,7 @@
       Todo
     </a>
     
-    <a href="/setting" class="btn normal-case text-lg flex items-center gap-2 {currentPath.startsWith('/setting') ? 'btn-primary' : 'btn-ghost'}">
+    <a href="/settings" class="btn normal-case text-lg flex items-center gap-2 {currentPath.startsWith('/setting') ? 'btn-primary' : 'btn-ghost'}">
       Setting
     </a>
     

@@ -9,10 +9,11 @@ export const GET = async () => {
     return json({timers: result});
 }
 
-export const POST = async (request: Request) => {
-    const { study_time, break_time } = await request.json();
-    const result = await db.insert(pomodoro).values({ study_time, break_time });
-    const newTImerId:number = result.lastInsertRowid as number;
-    const newTimer = await db.select().from(pomodoro).where(eq(pomodoro.id, newTImerId));
-    return json({timer: newTimer});
+export const POST = async ({ request }: { request: Request }) => {
+    const body = await request.json();
+    const { name, workTime, breakTime } = body;
+    const result = await db.insert(pomodoro).values({ name, study_time: workTime, break_time: breakTime });
+    const newTimerId:number = result.lastInsertRowid as number;
+    const newTimer = await db.select().from(pomodoro).where(eq(pomodoro.id, newTimerId));
+    return json({timer: newTimer[0]});
 }   

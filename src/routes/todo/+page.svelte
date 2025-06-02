@@ -1,14 +1,12 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
-    import { onMount } from 'svelte';
     import type { Todo } from '$lib/server/db/schema';
+    import { deleteTodo } from '$lib/client/todos';
     import type { PageData } from './$types';
-
     let { data } : { data: PageData } = $props();
-    let todos = $state<Todo[]>(data.todos as Todo[]);
+    let todos = $state<Todo[]>(data.todos.filter((todo) => todo.visible === 1) as Todo[]);
     let activeTodo = $state<Todo | null>(null);
     let showCompleted = $state(false);
-
     const handleStartPomodoro = () => {
         if (activeTodo) {
             goto(`/todo/${activeTodo.id}`);
@@ -21,8 +19,11 @@
         goto('/todo/add');
     }
 
-    const handleDeleteTodo = (id: number) => {
-        goto(`/todo/delete/${id}`);
+    const handleDeleteTodo = async (id: number) => {
+        deleteTodo(id)
+        .then((result) => {
+            if(result) todos = todos.filter((todo) => todo.id !== id);
+        });
     }
 
     const handleActivateTodo = (todo: Todo) => {
@@ -97,10 +98,7 @@
                 </label>
             </div>
         </div>
-
         <div class="space-y-4">
-
-
             {#if todos.length === 0}
                 <div class="empty-todo-content">
                     <p class="empty-todo-text">할 일이 없습니다.</p>
