@@ -63,9 +63,7 @@ onDestroy(() => {
 
 <svelte:head>
     <title>{todo.content} - 포모도로 타이머</title>
-    <script>
-        document.documentElement.setAttribute('data-theme', 'dark');
-    </script>
+    <meta name="description" content="{todo.description || '포모도로 타이머로 집중해서 작업하세요'}">
 </svelte:head>
 
 <div class="todo-info-section">

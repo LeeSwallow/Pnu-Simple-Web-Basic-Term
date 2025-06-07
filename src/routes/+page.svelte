@@ -2,6 +2,11 @@
     import { goto } from '$app/navigation';
 </script>
 
+<svelte:head>
+    <title>포모도로 Todo - 생산적인 시간 관리</title>
+    <meta name="description" content="포모도로 기법을 활용한 Todo 관리 앱으로 생산성을 높이세요">
+</svelte:head>
+
 <div class="px-4 py-16">
     <h1 class="text-4xl font-bold text-center mb-12">포모도로 Todo</h1>
     

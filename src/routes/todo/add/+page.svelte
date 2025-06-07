@@ -33,6 +33,11 @@
     }
 </script>
 
+<svelte:head>
+    <title>새 할일 추가 - 포모도로 Todo</title>
+    <meta name="description" content="새로운 할일을 추가하고 포모도로 목표를 설정하세요">
+</svelte:head>
+
 <h1 class="todo-create-title">새로운 Todo 작성</h1>
 
 <!-- 폼 시작 -->

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
     import { createTimer, validateTimer } from '$lib/client/timers';
 
     let newWorkTime = $state(25);
@@ -19,6 +20,11 @@
         });
     }
 </script>
+
+<svelte:head>
+    <title>타이머 생성 - 포모도로 Todo</title>
+    <meta name="description" content="개인 맞춤형 포모도로 타이머를 생성하세요">
+</svelte:head>
 
 <div class="timer-builder-container">
     <h1 class="timer-builder-title">새 타이머 만들기</h1>

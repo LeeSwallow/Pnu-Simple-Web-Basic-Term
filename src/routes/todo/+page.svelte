@@ -50,6 +50,11 @@
 
 </script>
 
+<svelte:head>
+    <title>할일 관리 - 포모도로 Todo</title>
+    <meta name="description" content="포모도로 기법으로 할일을 체계적으로 관리하세요">
+</svelte:head>
+
 <div class="todo-container">
     
     <div class="todo-header">
