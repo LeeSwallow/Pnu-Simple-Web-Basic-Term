@@ -1,12 +1,15 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import type { Todo } from '$lib/server/db/schema';
-    import { deleteTodo } from '$lib/client/todos';
+    import { deleteTodo, getDefaultTodo, createDefaultTodo } from '$lib/client/todos';
     import type { PageData } from './$types';
     let { data } : { data: PageData } = $props();
-    let todos = $state<Todo[]>(data.todos.filter((todo) => todo.visible === 1) as Todo[]);
+    
+    
+    let todos = $state<Todo[]>(data.todos as Todo[]);
     let activeTodo = $state<Todo | null>(null);
     let showCompleted = $state(false);
+
     const handleStartPomodoro = () => {
         if (activeTodo) {
             goto(`/todo/${activeTodo.id}`);
@@ -14,15 +17,30 @@
             goto(`/todo/${todos[0].id}`);
         }
     }
-    const handleCreateTodo = (e: Event) => {
-        e.preventDefault();
+
+    const handleCreateTodo = () => {
         goto('/todo/add');
     }
 
     const handleDeleteTodo = async (id: number) => {
         deleteTodo(id)
         .then((result) => {
-            if(result) todos = todos.filter((todo) => todo.id !== id);
+            if(result){ 
+                alert("정상적으로 삭제되었습니다.");
+                todos = todos.filter((todo) => todo.id !== id);
+            }
+        });
+    }
+
+    const handleStartWithoutTodo = async () => {
+        getDefaultTodo().then((todo) => {
+            if (todo) {
+                goto(`/todo/${todo.id}`);
+            } else {
+                createDefaultTodo().then((todo) => {
+                    goto(`/todo/${todo.id}`);
+                });
+            }
         });
     }
 
@@ -61,7 +79,7 @@
                     {:else}
                         <button 
                             class="btn btn-primary btn-sm"
-                            onclick={handleStartPomodoro}
+                            onclick={handleStartWithoutTodo}
                         >
                             그냥 시작하기
                         </button>
@@ -110,11 +128,11 @@
                         <h3 class="todo-title">{todo.content}</h3>
                         <p class="todo-description">{todo.description}</p>
                         <div class="todo-badges">
-                            {#if (showCompleted) || (todo.completed === 1)}
+                            {#if (showCompleted) && todo.completed}
                                 <div class="badge badge-success">
                                     완료: {todo.pomodoro} 포모도로
                                 </div>
-                            {:else}
+                            {:else if todo.completed === 0}
                                 <div class="badge {todo.pomodoro >= todo.min_pomodoro ? 'badge-success' : 'badge-primary'}">
                                     {todo.pomodoro}/{todo.min_pomodoro} 포모도로
                                 </div>

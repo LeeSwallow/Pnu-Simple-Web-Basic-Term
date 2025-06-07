@@ -1,5 +1,3 @@
-import type { Pomodoro } from "$lib/server/db/schema";
-
 export enum PomodoroTimerPhase {
     WORKING = 'WORKING',
     BREAKING = 'BREAKING',

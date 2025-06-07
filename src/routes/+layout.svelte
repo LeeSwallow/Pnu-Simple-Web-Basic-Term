@@ -1,10 +1,35 @@
 <script lang="ts">
 	import "../app.css";
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 	let { children } = $props();
 	let currentPath = $derived($page.url.pathname);
+	let isDark = $state(false);
 
+	onMount(() => {
+		// 현재 테마 확인
+		const currentTheme = document.documentElement.getAttribute('data-theme');
+		isDark = currentTheme === 'dark';
+	});
+
+	function toggleTheme() {
+		isDark = !isDark;
+		const newTheme = isDark ? 'dark' : 'light';
+		document.documentElement.setAttribute('data-theme', newTheme);
+		localStorage.setItem('theme', newTheme);
+	}
 </script>
+
+<!-- 테마 토글 버튼 -->
+<button class="theme-toggle-btn" onclick={toggleTheme}>
+	<div class="moon-icon" class:dark={isDark}>
+		{#if isDark}
+			🌙
+		{:else}
+			☀️
+		{/if}
+	</div>
+</button>
 
 <nav class="main-navbar">
   <div class="flex gap-4">
@@ -17,14 +42,9 @@
       Todo
     </a>
     
-    <a href="/settings" class="btn normal-case text-lg flex items-center gap-2 {currentPath.startsWith('/setting') ? 'btn-primary' : 'btn-ghost'}">
-      Setting
+    <a href="/timer" class="btn normal-case text-lg flex items-center gap-2 {currentPath.startsWith('/timer') ? 'btn-primary' : 'btn-ghost'}">
+      Timer
     </a>
-    
-    <a href="/stats" class="btn normal-case text-lg flex items-center gap-2 {currentPath.startsWith('/stats') ? 'btn-primary' : 'btn-ghost'}">
-      Stats
-    </a>
-
   </div>
 </nav>
 

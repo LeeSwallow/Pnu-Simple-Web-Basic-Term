@@ -1,9 +1,9 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
-    import { onMount } from 'svelte';
+    
     import { createTodo, validateCreateRequest } from '$lib/client/todos';
-    import type { createResTodoDto, createReqTodoDto } from '$lib/server/dto';
-    import type { Todo, Pomodoro } from '$lib/server/db/schema';
+    import type { createReqTodoDto } from '$lib/server/dto';
+    import type { Pomodoro } from '$lib/server/db/schema';
 
     const {data} = $props();
     let timers: Pomodoro[] = $state(data.timers as Pomodoro[]);
@@ -15,9 +15,6 @@
 
 
     async function handleSubmit() {
-        // TODO: 실제 데이터 저장 로직 구현
-
-
         const reqTodo: createReqTodoDto = {
             content: title,
             description,

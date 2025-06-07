@@ -35,10 +35,6 @@ export interface createResTodoDto {
     todo: Todo | null;
 }
 
-export interface updateResTodoDto {
-    todo: Todo | null;
-}
-
 export interface deleteResTodoDto {
     success: boolean;
 }

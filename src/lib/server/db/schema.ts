@@ -12,7 +12,6 @@ export const todo = sqliteTable('todo', {
 	pomodoro: integer('pomodoro', { mode: 'number' }).notNull().default(0), // 현재 완료한 포모도로 개수
 	timer_id: integer('timer_id', { mode: 'number' }).references(() => pomodoro.id),
 	completed: integer('completed', { mode: 'number' }).notNull().default(0), // 완료 여부 (0: 미완료, 1: 완료)
-	visible: integer('visible', { mode: 'number' }).notNull().default(1), // 표시 여부 (0: 미표시, 1: 표시)
 	createdAt: integer('created_at', { mode: 'number' }),
 	updatedAt: integer('updated_at', { mode: 'number' }),
 });

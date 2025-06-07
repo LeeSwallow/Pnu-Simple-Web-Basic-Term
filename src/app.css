@@ -1,7 +1,6 @@
 @import 'tailwindcss';
 @plugin 'daisyui';
 
-
 .main-section {
     @apply card bg-base-100 shadow-lg;
 
@@ -24,7 +23,44 @@
     transform:translate(-50%, 0%);
 }
 
+/* 테마 토글 버튼 스타일 */
+.theme-toggle-btn {
+    @apply bg-base-100 shadow-lg;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    z-index: 101;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
+.theme-toggle-btn:hover {
+    @apply shadow-xl;
+    transform: scale(1.05);
+}
+
+.theme-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+.moon-icon {
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+}
+
+.moon-icon.dark {
+    transform: rotate(15deg);
+}
+
+/* Light 테마 배경 (기본) */
 .bg {
     animation:slide 6s ease-in-out infinite alternate;
     background-image: linear-gradient(-60deg, var(--color-warning) 50%, var(--color-error) 50%);
@@ -35,6 +71,7 @@
     right:-50%;
     top:0;
     z-index:-1;
+    transition: all 0.5s ease;
 }
 
 .bg2 {
@@ -44,6 +81,19 @@
 
 .bg3 {
     animation-duration:10s;
+}
+
+/* Dark 테마 배경 */
+[data-theme="dark"] .bg {
+    background-image: linear-gradient(-60deg, #1e40af 50%, #7c3aed 50%); /* 선명한 남색 → 밝은 보라 */
+}
+
+[data-theme="dark"] .bg2 {
+    background-image: linear-gradient(-60deg, #3b82f6 50%, #a855f7 50%); /* 밝은 파랑 → 생생한 보라 */
+}
+
+[data-theme="dark"] .bg3 {
+    background-image: linear-gradient(-60deg, #2563eb 50%, #6366f1 50%); /* 진한 파랑 → 인디고 */
 }
 
 @keyframes slide {
