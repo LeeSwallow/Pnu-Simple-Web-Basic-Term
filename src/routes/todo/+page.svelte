@@ -16,11 +16,11 @@
         } else {
             goto(`/todo/${todos[0].id}`);
         }
-    }
+    };
 
     const handleCreateTodo = () => {
         goto('/todo/add');
-    }
+    };
 
     const handleDeleteTodo = async (id: number) => {
         deleteTodo(id)
@@ -30,7 +30,7 @@
                 todos = todos.filter((todo) => todo.id !== id);
             }
         });
-    }
+    };
 
     const handleStartWithoutTodo = async () => {
         getDefaultTodo().then((todo) => {
@@ -42,11 +42,11 @@
                 });
             }
         });
-    }
+    };
 
     const handleActivateTodo = (todo: Todo) => {
         activeTodo = todo;
-    }
+    };
 
 </script>
 
@@ -127,39 +127,55 @@
                     <p class="empty-todo-text">할 일이 없습니다.</p>
                 </div>
             {:else}
-            {#each todos as todo}
-                <div class="todo-item">
-                    <div class="todo-content">
-                        <h3 class="todo-title">{todo.content}</h3>
-                        <p class="todo-description">{todo.description}</p>
-                        <div class="todo-badges">
-                            {#if (showCompleted) && todo.completed}
-                                <div class="badge badge-success">
-                                    완료: {todo.pomodoro} 포모도로
+                {#if showCompleted}
+                    {#each todos as todo}
+                        <div class="todo-item">
+                            <div class="todo-content">
+                                <h3 class="todo-title">{todo.content}</h3>
+                                <p class="todo-description">{todo.description}</p>
+                                <div class="todo-badges">
+                                    {#if todo.completed}
+                                        <div class="badge badge-success">
+                                            완료: {todo.pomodoro} 포모도로
+                                        </div>
+                                    {:else}
+                                        <div class="badge {todo.pomodoro >= todo.min_pomodoro ? 'badge-success' : 'badge-primary'}">
+                                            {todo.pomodoro}/{todo.min_pomodoro} 포모도로
+                                        </div>
+                                    {/if}
                                 </div>
-                            {:else if todo.completed === 0}
-                                <div class="badge {todo.pomodoro >= todo.min_pomodoro ? 'badge-success' : 'badge-primary'}">
-                                    {todo.pomodoro}/{todo.min_pomodoro} 포모도로
-                                </div>
-                            {/if}
+                            </div>
+                            <div class="todo-actions">
+                                <button 
+                                    class="btn btn-error btn-sm"
+                                    onclick={() => handleDeleteTodo(todo.id)}
+                                >
+                                    삭제
+                                </button>
+                                <button 
+                                    class="btn btn-primary btn-sm"
+                                    onclick={() => handleActivateTodo(todo)}
+                                >
+                                    활성화
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="todo-actions">
-                        <button 
-                            class="btn btn-error btn-sm"
-                            onclick={() => handleDeleteTodo(todo.id)}
-                        >
-                            삭제
-                        </button>
-                        <button 
-                            class="btn btn-primary btn-sm"
-                            onclick={() => handleActivateTodo(todo)}
-                        >
-                            활성화
-                        </button>
-                    </div>
-                </div>
-            {/each}
+                    {/each}
+                {:else}
+                    {#each todos.filter((todo) => todo.pomodoro < todo.min_pomodoro) as todo}
+                        <div class="todo-item">
+                            <div class="todo-content">
+                                <h3 class="todo-title">{todo.content}</h3>
+                                <p class="todo-description">{todo.description}</p>
+                                <div class="todo-badges">
+                                    <div class="badge badge-primary">
+                                        {todo.pomodoro}/{todo.min_pomodoro} 포모도로
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {/each}
+                {/if}
             {/if}
         </div>
     </div>

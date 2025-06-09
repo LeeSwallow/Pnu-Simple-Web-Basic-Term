@@ -8,10 +8,10 @@
     const {data} = $props();
     let timers: Pomodoro[] = $state(data.timers as Pomodoro[]);
     
-    let title = '';
-    let description = '';
-    let minPomodoro = 1;
-    let selectedTimer = 0;
+    let title = $state('');
+    let description = $state('');
+    let minPomodoro = $state(1);
+    let selectedTimer = $state(0);
 
 
     async function handleSubmit() {

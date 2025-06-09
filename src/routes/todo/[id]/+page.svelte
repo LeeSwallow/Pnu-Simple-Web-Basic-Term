@@ -16,6 +16,7 @@ const timer = new PomodoroTimer(todo.timer?.study_time ?? 25, todo.timer?.break_
 let clock_str = $state(formatTime(timer.getWorkTime()));
 let spend_time = $state(0);
 let pomoState: PomodoroTimerState = $state(timer.getState());
+let pomo_state_title = $state("작업 시간");
 
 onMount(() => {
     beforeNavigate(({ cancel }) => {
@@ -33,17 +34,24 @@ timer.onTick = ((timeLeft) => {
     spend_time++;
 });
 
-timer.onComplete = async (phase) => {
-    console.log(phase);
-    if (phase === PomodoroTimerPhase.WORKING) {
-        plusPomodoro(todo.id, 1, timer.getWorkTime(), timer.getBreakTime())
-        .then((result) => {
-            if(result) {
-                todo.pomodoro++;
-            }
-        });
-    } 
-};     
+timer.onCompleteWork = () => {
+    plusPomodoro(todo.id, 1, timer.getWorkTime(), timer.getBreakTime())
+    .then((result) => {
+        if(result) {
+            todo.pomodoro++;
+        }
+    });
+    let isSkip = confirm("포모도로 완료! 휴식 시간을 건너뛰시겠습니까?");
+    if (!isSkip) {
+        timer.setPhase(PomodoroTimerPhase.BREAKING);
+        pomo_state_title = "휴식 시간";
+    }
+};
+
+timer.onCompleteBreak = () => {
+    timer.setPhase(PomodoroTimerPhase.WORKING);
+    pomo_state_title = "작업 시간";
+};
 
 timer.onStateChanged = ((state) => {
     clock_str = formatTime(timer.getTimeLeft());
@@ -72,27 +80,31 @@ onDestroy(() => {
     <div class="todo-detail">최소 목표 포모도로: <span class="todo-detail-value">{todo.min_pomodoro}</span></div>
     <div class="todo-detail">완료한 포모도로: <span class="todo-detail-value">{todo.pomodoro}</span></div>
     {#if todo.timer}
-        <div class="todo-detail">공부 시간: <span class="todo-detail-value">{todo.timer.study_time}분</span></div>
-        <div class="todo-detail">휴식 시간: <span class="todo-detail-value">{todo.timer.break_time}분</span></div>
+        <div class="todo-detail">공부 시간 설정: <span class="todo-detail-value">{todo.timer.study_time}분</span></div>
+        <div class="todo-detail">휴식 시간 설정: <span class="todo-detail-value">{todo.timer.break_time}분</span></div>
     {/if}
 </div>
 
 <div class="timer-container">
-    <div class="timer-grid">
-        <div class="timer-item">
-            <div class="timer-label">current time</div>
-            <div class="timer-display">
-                <span class="timer-text">
-                    {clock_str}
-                </span>
+
+    <div class="timer-section">
+        <div class="timer-state-title">{pomo_state_title}</div>
+        <div class="timer-grid">
+            <div class="timer-item">
+                <div class="timer-label">current time</div>
+                <div class="timer-display">
+                    <span class="timer-text">
+                        {clock_str}
+                    </span>
+                </div>
             </div>
-        </div>
-        <div class="timer-item">
-            <div class="timer-label">spend time</div>
-            <div class="timer-display">
-                <span class="timer-text">
-                    {formatTime(spend_time)}
-                </span>
+            <div class="timer-item">
+                <div class="timer-label">spend time</div>
+                <div class="timer-display">
+                    <span class="timer-text">
+                        {formatTime(spend_time)}
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -144,6 +156,10 @@ onDestroy(() => {
         @apply text-base text-base-content/50 mb-1;
     }
 
+    .timer-state-title {
+        @apply text-primary font-bold text-2xl text-center mb-4;
+    }
+
     .todo-detail:last-child {
         @apply mb-4;
     }
@@ -153,7 +169,11 @@ onDestroy(() => {
     }
 
     .timer-container {
-        @apply max-w-[80vw] w-full sm:w-[600px] bg-base-100 rounded-2xl p-10 sm:p-14 mx-auto shadow-2xl relative;
+        @apply max-w-[80vw] w-full sm:w-[600px] p-10 sm:p-14 mx-auto  relative;
+    }
+
+    .timer-section {
+        @apply flex flex-col items-center bg-base-200 rounded-2xl p-4 mb-4;
     }
 
     .timer-grid {
@@ -161,7 +181,7 @@ onDestroy(() => {
     }
 
     .timer-item {
-        @apply flex flex-col;
+        @apply flex flex-col items-center bg-base-300 rounded-2xl p-4;
     }
 
     .timer-label {
