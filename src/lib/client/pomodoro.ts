@@ -21,6 +21,9 @@ export class PomodoroTimer {
 
     public onTick: (timeLeft: number) => void = () => {};
     public onComplete: (phase: PomodoroTimerPhase) => void = () => {};
+    public onCompleteWork: () => void = () => {};
+    public onCompleteBreak: () => void = () => {};
+    
     public onError: (error: string) => void = () => {};
     public onStateChanged: (state: PomodoroTimerState) => void = () => {};
 
@@ -31,20 +34,21 @@ export class PomodoroTimer {
     }
 
     private finish() {
-        this.onComplete(this.phase);
         this.state = PomodoroTimerState.STOPPED;
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
         }
         this.timerInterval = null;
+        
+        this.onComplete(this.phase);
         if (this.phase === PomodoroTimerPhase.WORKING) {
             this.timeLeft = this.workTime;
-            this.phase = PomodoroTimerPhase.WORKING;
+            this.onCompleteWork();
+
         } else {
             this.timeLeft = this.breakTime;
-            this.phase = PomodoroTimerPhase.BREAKING;
+            this.onCompleteBreak();
         }
-        
         this.onStateChanged(this.state);
     }
 
@@ -149,5 +153,9 @@ export class PomodoroTimer {
 
     public getBreakTime() {
         return this.breakTime;
+    }
+
+    public setPhase(phase: PomodoroTimerPhase) {
+        this.phase = phase;
     }
 }

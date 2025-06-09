@@ -83,6 +83,7 @@
 
     .timer-builder-container {
         @apply mx-auto px-4 py-8;
+        min-width: 50vw;
     }
 
     .timer-builder-title {
@@ -91,10 +92,6 @@
 
     .timer-builder-form {
         @apply max-w-lg mx-auto;
-    }
-
-    .timer-builder-card {
-        @apply bg-base-100 shadow-xl rounded-2xl p-8;
     }
 
     .timer-builder-form-item {
