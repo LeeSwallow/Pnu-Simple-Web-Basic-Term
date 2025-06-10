@@ -1,7 +1,7 @@
 import { defineConfig } from 'drizzle-kit';
 
 // For build process, use a temporary database
-const DATABASE_URL = process.env.DATABASE_URL || 'file:./temp.db';
+const DATABASE_URL = process.env.DATABASE_URL || 'file:./local.db';
 
 export default defineConfig({
 	dialect: 'sqlite',

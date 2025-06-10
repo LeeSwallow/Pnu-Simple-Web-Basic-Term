@@ -1,38 +1,50 @@
-# sv
+# 실행 방법
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+## 1. 개발 환경에서 실행
 
 ```bash
-# create a new project in the current directory
-npx sv create
+# 의존성 설치
+npm install
 
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
+# 개발 서버 실행
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
+- 브라우저에서 [http://localhost:5173](http://localhost:5173) (또는 출력된 포트)로 접속
 
-## Building
+---
 
-To create a production version of your app:
+## 2. 프로덕션 빌드
 
 ```bash
 npm run build
 ```
+- 빌드 결과물은 `build/` 디렉토리에 생성
 
-You can preview the production build with `npm run preview`.
+---
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## 3. Docker로 실행
+
+### 1) 이미지 빌드
+
+```bash
+docker build -t pomo-todo .
+```
+
+### 2) 컨테이너 실행
+
+```bash
+docker run -p 8081:3000 pomo-todo
+```
+- 브라우저에서 [http://localhost:8081](http://localhost:8081) 접속
+
+---
+
+## 4. 데이터베이스 마이그레이션
+
+- Docker 빌드 시 자동으로 마이그레이션이 실행되어 `local.db`가 생성됩니다.
+- 직접 마이그레이션하려면:
+  ```bash
+  npx drizzle-kit push --force
+  ```
+
+---
