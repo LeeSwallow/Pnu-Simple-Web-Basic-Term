@@ -8,6 +8,8 @@ const client = new Database(env.DATABASE_URL);
 
 export const db = drizzle(client, { schema });
 
+
+
 db.select().from(schema.pomodoro).then(
     timers => {
         if (timers.length == 0) {

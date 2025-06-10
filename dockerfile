@@ -1,6 +1,6 @@
 FROM node:21-alpine AS builder
 
-RUN midir -p /app
+RUN mkdir -p /app
 WORKDIR /app
 COPY package.json package-lock.json svelte.config.js ./
 RUN npm ci --only=production
